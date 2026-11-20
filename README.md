@@ -17,6 +17,8 @@
 ├── backend/                  FastAPI（Python） 后端
 │   ├── app/routers/          每个业务模块一组接口
 │   ├── app/services/         业务规则与状态流转
+│   ├── app/migration/        版本化导出包校验、迁移流水线与对账
+│   ├── scripts/              取样、手工补包与端到端验证脚本
 │   └── app/store.py          内存数据仓库与示例数据
 ├── .gitignore
 └── docker-compose.yml
@@ -67,6 +69,14 @@ npm run dev
 | 数据集市 | `data_mart` | 集市表 | 表编号、表名称、主题域 |
 | 数据导出 | `export` | 导出任务 | 任务编号、导出对象、导出格式 |
 | 数据审计 | `audit` | 审计记录 | 记录编号、操作类型、操作人 |
+| 迁移流水线 | `migration` | 版本化导出包/兼容数据集/迁移对账 | 源包编号、分卷行数、字段类型、问题类型 |
+
+### 迁移流水线
+
+存量 `{module,total,items}` JSON 清单与新版 v2 分卷交付包（字段类型、采集截面、
+分卷 sha256/行数清单）由迁移流水线统一消费：坏分卷整包阻断不发布，同源包重复迁移
+只确认一次，同号行按来源各自保留不合并，支持撤回、回滚到最近可复验交付与对账重跑。
+格式契约、校验口径与复现步骤见 [`backend/MIGRATION.md`](backend/MIGRATION.md)。
 
 ## 约定
 

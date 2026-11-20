@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 
 from app.schemas import ActionResult, EntryPayload, PageResult
 from app.services.data_service import DataServiceService
+from app.migration.pipeline import pipeline
 
 router = APIRouter(prefix="/api/data_service", tags=["数据API发布"])
 
@@ -21,6 +22,35 @@ def export_entries() -> dict[str, Any]:
     """导出数据API发布清单：返回当前过滤条件下的全量数据。"""
     items, total = service.list_entries(page=1, size=10000)
     return {"module": "data_service", "total": total, "items": items}
+
+
+@router.get("/published_dataset")
+def read_published_dataset(
+    package_id: str | None = Query(default=None, description="按迁移来源包过滤"),
+    page: int = 1,
+    size: int = 20,
+) -> dict[str, Any]:
+    """数据API发布在迁移流水线中消费版本化导出包后的兼容数据集读取入口。
+
+    存量 v1 JSON 与新版 v2 分卷包发布后都从这里按同一口径读取。
+    """
+    if size > 200:
+        raise HTTPException(status_code=400, detail="每页最多 200 条，请缩小分页范围")
+    return pipeline.query_dataset(package_id=package_id, page=page, size=size)
+
+
+@router.get("/migration_overview")
+def migration_overview() -> dict[str, Any]:
+    """供数据服务页面展示迁移对账概况：交付数、当前数据范围与跨包同号记录。"""
+    deliveries = pipeline.list_deliveries()
+    scope = pipeline.dataset_scope()
+    return {
+        "delivery_total": len(deliveries),
+        "published_packages": sum(1 for item in deliveries if item.get("status") == "published"),
+        "rejected_packages": sum(1 for item in deliveries if item.get("status") == "rejected"),
+        "duplicate_confirmations": sum(1 for item in deliveries if item.get("status") == "duplicate"),
+        "scope": scope,
+    }
 
 
 @router.get("", response_model=PageResult[dict])

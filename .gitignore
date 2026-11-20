@@ -107,3 +107,6 @@ desktop.ini
 !**/.env.example
 !.env.example
 # END S11 LOCAL SNAPSHOT EXCLUSIONS
+
+# ===== 迁移流水线运行期状态 =====
+var/

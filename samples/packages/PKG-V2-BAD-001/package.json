@@ -1,0 +1,50 @@
+{
+  "package_version": "2",
+  "package_id": "PKG-V2-BAD-001",
+  "module": "export",
+  "export_interface": "manual.bad.builder",
+  "collected_at": "2026-11-20T09:30:00+08:00",
+  "total": 4,
+  "fields": [
+    {
+      "name": "任务编号",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "导出格式",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "数据行数",
+      "type": "integer",
+      "nullable": false
+    },
+    {
+      "name": "含敏感字段",
+      "type": "boolean",
+      "nullable": false
+    }
+  ],
+  "volumes": [
+    {
+      "volume_id": "part-001",
+      "file": "volumes/part-001.json",
+      "row_count": 2,
+      "sha256": "e9e2bcfa3df4bcdef52168664382926248b3fcf91eca91363f2ee8a27224616d"
+    },
+    {
+      "volume_id": "part-002",
+      "file": "volumes/part-002.json",
+      "row_count": 1,
+      "sha256": "d93dbe063fd8664146c0568645113a54180f8cfdfe8fc9296b0f1936fc15b583"
+    },
+    {
+      "volume_id": "part-003",
+      "file": "volumes/part-003.json",
+      "row_count": 1,
+      "sha256": "551e3dcb876b6244f0b0cdb98198073272933aa110440d99f7f184640dcc214c"
+    }
+  ]
+}
